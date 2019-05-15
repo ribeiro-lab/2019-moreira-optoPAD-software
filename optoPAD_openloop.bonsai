@@ -1,0 +1,3851 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.2.1">
+  <Workflow xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:q1="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp" xmlns:q2="clr-namespace:Bonsai.IO;assembly=Bonsai.System" xmlns:q3="clr-namespace:Bonsai.Arduino;assembly=Bonsai.Arduino" xmlns:q4="clr-namespace:Bonsai.Scripting;assembly=Bonsai.Scripting" xmlns:q5="clr-namespace:Bonsai.FlyPad;assembly=Bonsai.FlyPad" xmlns="https://horizongir.org/bonsai">
+    <Nodes>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q1:MatrixWriter">
+          <q1:Path>F:\kathrin\optopad\20170703\CapacitanceData_C03_01_22_C01_23_44_C02_45_64</q1:Path>
+          <q1:Suffix>Timestamp</q1:Suffix>
+          <q1:Overwrite>false</q1:Overwrite>
+          <q1:Layout>RowMajor</q1:Layout>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="Timestamp" />
+      </Expression>
+      <Expression xsi:type="q2:CsvWriter">
+        <q2:FileName>F:\kathrin\optopad\20170703\CapacitanceTimeStamp.csv</q2:FileName>
+        <q2:Append>false</q2:Append>
+        <q2:Overwrite>false</q2:Overwrite>
+        <q2:Suffix>Timestamp</q2:Suffix>
+        <q2:IncludeHeader>false</q2:IncludeHeader>
+        <q2:Selector>Source.Timestamp</q2:Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q3:DigitalOutput">
+          <q3:PortName>COM4</q3:PortName>
+          <q3:Pin>50</q3:Pin>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="BooleanProperty">
+          <Value>false</Value>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="NestedWorkflow">
+        <Name>1</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>5</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>24</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>11</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>0</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>7</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>4</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>20</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>12</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>6</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>28</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>1</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>7</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="q2:CsvWriter">
+              <q2:FileName>New folder\DigitalOutputTimeStamp_01.csv</q2:FileName>
+              <q2:Append>false</q2:Append>
+              <q2:Overwrite>false</q2:Overwrite>
+              <q2:Suffix>Timestamp</q2:Suffix>
+              <q2:IncludeHeader>false</q2:IncludeHeader>
+              <q2:Selector>Source.Item1,Source.Item2</q2:Selector>
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>16</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>1</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>3</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Merge" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>2</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>16</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>8</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>40</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>9</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>44</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>10</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="Zip" />
+            </Expression>
+            <Expression xsi:type="NestedWorkflow">
+              <Name>Arena</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedPropertyOfInt32DigitalOutput">
+                    <MemberName>Pin</MemberName>
+                    <Name>Pin 1_1</Name>
+                    <Value>11</Value>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+    return clr.GetClrType(int)
+
+def process(input):
+    colour = input[1]
+    if input[0] &gt; 12:
+      fact = -1
+    else:
+      fact = 1
+    ch = input[0]
+    if (colour == 1):
+      return ch
+    elif (colour == 2):
+      return ch + 2*fact
+    elif (colour == 3):
+      return ch + fact
+    elif (colour == 4):
+      return ch - fact
+    else:
+      return 50</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="NestedWorkflow">
+                    <Name>Open-Loop Stim</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Delay">
+                            <DueTime>PT2S</DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Timer">
+                            <DueTime>PT0S</DueTime>
+                            <Period>PT3S</Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="Merge" />
+                        </Expression>
+                        <Expression xsi:type="GreaterThan">
+                          <Operand xsi:type="WorkflowPropertyOfInt64">
+                            <Value>0</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                          <MemberName>Period</MemberName>
+                          <Name>Period</Name>
+                          <Value>PT3S</Value>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                          <MemberName>DueTime</MemberName>
+                          <Name>DueTime</Name>
+                          <Value>PT2S</Value>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge>
+                          <From>0</From>
+                          <To>6</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>1</From>
+                          <To>0</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>2</From>
+                          <To>5</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>2</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>3</From>
+                          <To>1</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>5</From>
+                          <To>4</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>6</From>
+                          <To>5</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                        <Edge>
+                          <From>7</From>
+                          <To>3</To>
+                          <Label>Source1</Label>
+                        </Edge>
+                        <Edge>
+                          <From>8</From>
+                          <To>1</To>
+                          <Label>Source2</Label>
+                        </Edge>
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedTimeSpanOfTimer">
+                    <MemberName>Period</MemberName>
+                    <Name>Period</Name>
+                    <Value>PT4S</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="q3:DigitalOutput">
+                      <q3:PortName>COM4</q3:PortName>
+                      <q3:Pin>48</q3:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[3])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="ExternalizedTimeSpanOfDelay">
+                    <MemberName>DueTime</MemberName>
+                    <Name>DueTime</Name>
+                    <Value>PT1S</Value>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>PortName</MemberName>
+                    <Name>COM4</Name>
+                    <Value>COM4</Value>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>import clr
+
+def getOutputType():
+  return clr.GetClrType(tuple)
+
+def process(input):
+  with open(r'config/experiment_openloop.dat') as f:
+    f=[x.strip() for x in f if x.strip()]
+    data=[tuple(map(float,x.split())) for x in f[0:]]
+    length = len(data)
+  return data[input]</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="q4:PythonTransform">
+                    <q4:Script>from System import TimeSpan
+
+@returns(TimeSpan)
+def process(input):
+  return TimeSpan.FromSeconds(input[2])</q4:Script>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedPropertyOfStringExternalizedPropertyOfStringDigitalOutput">
+                    <MemberName>Name</MemberName>
+                    <Name>Name</Name>
+                    <Value>PortName</Value>
+                  </Expression>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source2</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge>
+                    <From>0</From>
+                    <To>5</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>1</From>
+                    <To>0</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>2</From>
+                    <To>11</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>3</From>
+                    <To>5</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>4</From>
+                    <To>3</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>5</From>
+                    <To>10</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>6</From>
+                    <To>8</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>8</From>
+                    <To>3</To>
+                    <Label>Source2</Label>
+                  </Edge>
+                  <Edge>
+                    <From>9</From>
+                    <To>5</To>
+                    <Label>Source3</Label>
+                  </Edge>
+                  <Edge>
+                    <From>10</From>
+                    <To>7</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>1</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>12</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>11</From>
+                    <To>6</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>12</From>
+                    <To>4</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>13</From>
+                    <To>9</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                  <Edge>
+                    <From>14</From>
+                    <To>13</To>
+                    <Label>Source1</Label>
+                  </Edge>
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>11</Value>
+              </Combinator>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge>
+              <From>0</From>
+              <To>1</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>0</From>
+              <To>2</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>1</From>
+              <To>2</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>2</From>
+              <To>21</To>
+              <Label>Source6</Label>
+            </Edge>
+            <Edge>
+              <From>3</From>
+              <To>19</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>4</From>
+              <To>3</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>4</From>
+              <To>19</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>5</From>
+              <To>8</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>5</From>
+              <To>9</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>6</From>
+              <To>7</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>6</From>
+              <To>13</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>7</From>
+              <To>13</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>8</From>
+              <To>9</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>9</From>
+              <To>21</To>
+              <Label>Source8</Label>
+            </Edge>
+            <Edge>
+              <From>10</From>
+              <To>11</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>10</From>
+              <To>12</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>11</From>
+              <To>12</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>12</From>
+              <To>21</To>
+              <Label>Source7</Label>
+            </Edge>
+            <Edge>
+              <From>13</From>
+              <To>21</To>
+              <Label>Source5</Label>
+            </Edge>
+            <Edge>
+              <From>14</From>
+              <To>24</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>15</From>
+              <To>23</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>17</From>
+              <To>26</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>18</From>
+              <To>15</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>18</From>
+              <To>23</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>19</From>
+              <To>21</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>20</From>
+              <To>17</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>20</From>
+              <To>26</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>21</From>
+              <To>16</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>22</From>
+              <To>14</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>22</From>
+              <To>24</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>23</From>
+              <To>21</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>24</From>
+              <To>21</To>
+              <Label>Source3</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>3</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>15</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>14</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>17</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>7</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>1</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>11</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>8</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>28</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>31</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>34</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>25</From>
+              <To>37</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>26</From>
+              <To>21</To>
+              <Label>Source4</Label>
+            </Edge>
+            <Edge>
+              <From>27</From>
+              <To>21</To>
+              <Label>Source9</Label>
+            </Edge>
+            <Edge>
+              <From>28</From>
+              <To>27</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>29</From>
+              <To>28</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>29</From>
+              <To>27</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>30</From>
+              <To>21</To>
+              <Label>Source10</Label>
+            </Edge>
+            <Edge>
+              <From>31</From>
+              <To>30</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>32</From>
+              <To>31</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>32</From>
+              <To>30</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>33</From>
+              <To>21</To>
+              <Label>Source11</Label>
+            </Edge>
+            <Edge>
+              <From>34</From>
+              <To>33</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>35</From>
+              <To>34</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>35</From>
+              <To>33</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>36</From>
+              <To>21</To>
+              <Label>Source12</Label>
+            </Edge>
+            <Edge>
+              <From>37</From>
+              <To>36</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>38</From>
+              <To>37</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>38</From>
+              <To>36</To>
+              <Label>Source1</Label>
+            </Edge>
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="StringProperty">
+          <Value>COM4</Value>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q3:DigitalOutput">
+          <q3:PortName>COM5</q3:PortName>
+          <q3:Pin>50</q3:Pin>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="BooleanProperty">
+          <Value>false</Value>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q3:DigitalOutput">
+          <q3:PortName>COM3</q3:PortName>
+          <q3:Pin>50</q3:Pin>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="BooleanProperty">
+          <Value>false</Value>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q5:FlyPadSource">
+          <q5:LocationId>22</q5:LocationId>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="TakeUntil" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="Timer">
+          <DueTime>PT1H</DueTime>
+          <Period>PT0S</Period>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="TakeUntil" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="TakeUntil" />
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge>
+        <From>0</From>
+        <To>12</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>1</From>
+        <To>2</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>2</From>
+        <To>14</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>4</From>
+        <To>3</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>5</From>
+        <To>15</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>6</From>
+        <To>5</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>8</From>
+        <To>7</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>10</From>
+        <To>9</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>11</From>
+        <To>0</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>11</From>
+        <To>1</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>13</From>
+        <To>12</To>
+        <Label>Source2</Label>
+      </Edge>
+      <Edge>
+        <From>13</From>
+        <To>14</To>
+        <Label>Source2</Label>
+      </Edge>
+      <Edge>
+        <From>13</From>
+        <To>15</To>
+        <Label>Source2</Label>
+      </Edge>
+    </Edges>
+  </Workflow>
+  <ExtensionTypes>
+    <Type>Bonsai.Dsp.MatrixWriter, Bonsai.Dsp, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.Timestamp, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.IO.CsvWriter, Bonsai.System, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Arduino.DigitalOutput, Bonsai.Arduino, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.BooleanProperty, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.IntProperty, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.ExternalizedProperty`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Bonsai.Arduino.DigitalOutput, Bonsai.Arduino, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null]], Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Scripting.PythonTransform, Bonsai.Scripting, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.BitwiseNotBuilder, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.Delay, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.GreaterThanBuilder, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.WorkflowProperty`1[[System.Int64, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.Timer, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.Merge, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.ExternalizedTimeSpan`1[[Bonsai.Reactive.Timer, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null]], Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.ExternalizedTimeSpan`1[[Bonsai.Reactive.Delay, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null]], Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.ExternalizedProperty`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Bonsai.Arduino.DigitalOutput, Bonsai.Arduino, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null]], Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.ExternalizedProperty`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Bonsai.Expressions.ExternalizedProperty`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Bonsai.Arduino.DigitalOutput, Bonsai.Arduino, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null]], Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null]], Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.Zip, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Expressions.StringProperty, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.FlyPad.FlyPadSource, Bonsai.FlyPad, Version=0.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.TakeUntil, Bonsai.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null</Type>
+  </ExtensionTypes>
+</WorkflowBuilder>
